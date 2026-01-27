@@ -1,0 +1,177 @@
+openapi: 3.0.3
+info:
+  title: Generative Art World API
+  version: 1.0.0
+servers:
+  - url: /api
+tags:
+  - name: World
+    description: Operations for managing generative art worlds
+paths:
+  /world:
+    post:
+      summary: Create a new world
+      tags:
+        - World
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWorldRequest'
+      responses:
+        '201':
+          description: World created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorldDefinition'
+    get:
+      summary: List all worlds
+      tags:
+        - World
+      responses:
+        '200':
+          description: List of worlds
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WorldDefinition'
+  /world/{id}:
+    get:
+      summary: Get world by ID
+      tags:
+        - World
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Found world
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorldDefinition'
+        '404':
+          description: World not found
+  /world/{id}/export:
+    get:
+      summary: Export world as JSON
+      tags:
+        - World
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: World exported
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+components:
+  schemas:
+    CreateWorldRequest:
+      type: object
+      properties:
+        seed:
+          type: integer
+          format: int64
+          description: Optional seed for deterministic generation
+        flowScale:
+          type: number
+          format: double
+          description: Flow field intensity (0.5-2.0), influenced by user stillness
+        flowComplexity:
+          type: number
+          format: double
+          description: Flow field complexity (0.0-1.0), influenced by direction changes
+        density:
+          type: number
+          format: double
+          description: Geometry density (0.0-1.0), influenced by movement speed
+        verticalBias:
+          type: number
+          format: double
+          description: Vertical emphasis (0.0-1.0), influenced by camera pitch
+        fogDensity:
+          type: number
+          format: double
+          description: Fog intensity (0.01-0.05), influenced by stillness
+    WorldDefinition:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        seed:
+          type: integer
+        palette:
+          type: array
+          items:
+            type: string
+        flowFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowField'
+        geometryFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/GeometryField'
+        ambient:
+          $ref: '#/components/schemas/AmbientSettings'
+        bounds:
+          $ref: '#/components/schemas/WorldBounds'
+    FlowField:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - VECTOR_NOISE
+            - PERLIN_NOISE
+            - CURL_NOISE
+            - SIMPLEX_NOISE
+            - RANDOM
+        scale:
+          type: number
+        strength:
+          type: number
+    GeometryField:
+      type: object
+      properties:
+        type:
+          type: string
+        density:
+          type: number
+        size:
+          type: number
+    AmbientSettings:
+      type: object
+      properties:
+        lightIntensity:
+          type: number
+        fogDensity:
+          type: number
+        motionNoise:
+          type: number
+    WorldBounds:
+      type: object
+      properties:
+        x:
+          type: number
+        y:
+          type: number
+        z:
+          type: number
