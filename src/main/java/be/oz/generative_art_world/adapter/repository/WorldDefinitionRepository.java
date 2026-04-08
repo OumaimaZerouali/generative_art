@@ -2,29 +2,37 @@ package be.oz.generative_art_world.adapter.repository;
 
 import be.oz.generative_art_world.domain.WorldDefinition;
 import be.oz.generative_art_world.usecase.WorldRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Repository
+@RequiredArgsConstructor
 public class WorldDefinitionRepository implements WorldRepository {
 
-    private final Map<UUID, WorldDefinition> storage = new ConcurrentHashMap<>();
+    private final WorldJpaRepository jpaRepository;
+    private final ObjectMapper objectMapper;
 
     @Override
     public WorldDefinition save(WorldDefinition world) {
-        storage.put(world.getId(), world);
+        var entity = WorldEntity.fromDomain(world, objectMapper);
+        jpaRepository.save(entity);
         return world;
     }
 
     @Override
     public Optional<WorldDefinition> findById(UUID id) {
-        return Optional.ofNullable(storage.get(id));
+        return jpaRepository.findById(id).map(e -> e.toDomain(objectMapper));
     }
 
     @Override
     public List<WorldDefinition> findAll() {
-        return new ArrayList<>(storage.values());
+        return jpaRepository.findAll().stream()
+                .map(e -> e.toDomain(objectMapper))
+                .toList();
     }
 }

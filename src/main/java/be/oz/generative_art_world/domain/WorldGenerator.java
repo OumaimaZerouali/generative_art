@@ -1,11 +1,11 @@
 package be.oz.generative_art_world.domain;
 
+import be.oz.genart.random.SeededRandom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 @Component
@@ -33,7 +33,7 @@ public class WorldGenerator {
                                    ColorHarmony colorHarmony, PatternType patternType,
                                    List<String> paletteColors) {
         var actualSeed = seed != null ? seed : System.currentTimeMillis();
-        var random = new Random(actualSeed);
+        var rng = new SeededRandom(actualSeed);
 
         // Generate or use provided palette
         Palette palette;
@@ -41,26 +41,26 @@ public class WorldGenerator {
             palette = new Palette(paletteColors);
         } else {
             var harmony = colorHarmony != null ? colorHarmony : ColorHarmony.ANALOGOUS;
-            palette = paletteGenerator.generate(harmony, random, 5 + random.nextInt(3));
+            palette = paletteGenerator.generate(harmony, rng, 5 + rng.nextInt(3));
         }
 
         // Generate bounds first (needed for pattern generation)
-        var bounds = generateBounds(random);
+        var bounds = generateBounds(rng);
 
         // Generate pattern if specified
         Pattern pattern = null;
         if (patternType != null) {
             float complexity = density != null ? density.floatValue() : 0.5f;
-            pattern = patternGenerator.generate(patternType, random, palette, bounds, complexity);
+            pattern = patternGenerator.generate(patternType, rng, palette, bounds, complexity);
         }
 
         return new WorldDefinition(
                 UUID.randomUUID(),
                 actualSeed,
                 palette,
-                generateFlowFields(random, flowScale, flowComplexity),
-                generateGeometryFields(random, density, verticalBias),
-                generateAmbientSettings(random, fogDensity),
+                generateFlowFields(rng, flowScale, flowComplexity),
+                generateGeometryFields(rng, density, verticalBias),
+                generateAmbientSettings(rng, fogDensity),
                 bounds,
                 pattern
         );
@@ -85,21 +85,24 @@ public class WorldGenerator {
     /**
      * Flow fields influenced by parameters.
      */
-    private List<FlowField> generateFlowFields(Random random, Double flowScale, Double flowComplexity) {
+    private List<FlowField> generateFlowFields(SeededRandom rng, Double flowScale, Double flowComplexity) {
         List<FlowField> fields = new ArrayList<>();
 
-        var scale = flowScale != null ? flowScale : 1.0;
-        var complexity = flowComplexity != null ? flowComplexity : 0.5;
+        Double scale = flowScale != null ? flowScale : 1.0;
+        Double complexity = flowComplexity != null ? flowComplexity : 0.5;
 
         // Complexity determines number of layers (1-3)
         var fieldCount = 1 + (int)(complexity * 2);
         FlowFieldType[] types = FlowFieldType.values();
 
         for (int i = 0; i < fieldCount; i++) {
+            FlowFieldType type = types[rng.nextInt(types.length)];
+            long fieldSeed = rng.nextLong();
             fields.add(new FlowField(
-                    types[random.nextInt(types.length)],
+                    type,
                     scale.floatValue(),
-                    0.3f + random.nextFloat() * 0.5f
+                    0.3f + (float) rng.nextDouble() * 0.5f,
+                    fieldSeed
             ));
         }
         return fields;
@@ -108,19 +111,19 @@ public class WorldGenerator {
     /**
      * Geometry influenced by parameters.
      */
-    private List<GeometryField> generateGeometryFields(Random random, Double density, Double verticalBias) {
+    private List<GeometryField> generateGeometryFields(SeededRandom rng, Double density, Double verticalBias) {
         List<GeometryField> fields = new ArrayList<>();
         String[] geometryTypes = {"sphere", "cube", "cylinder", "torus", "cone"};
 
-        var actualDensity = density != null ? density : 0.5;
-        var actualVerticalBias = verticalBias != null ? verticalBias : 0.5;
+        Double actualDensity = density != null ? density : 0.5;
+        Double actualVerticalBias = verticalBias != null ? verticalBias : 0.5;
 
         // Density determines number of fields (1-4)
         var fieldCount = 1 + (int)(actualDensity * 3);
 
         for (int i = 0; i < fieldCount; i++) {
             fields.add(new GeometryField(
-                    geometryTypes[random.nextInt(geometryTypes.length)],
+                    geometryTypes[rng.nextInt(geometryTypes.length)],
                     actualDensity.floatValue(),
                     0.5f + actualVerticalBias.floatValue() * 2.0f
             ));
@@ -132,20 +135,20 @@ public class WorldGenerator {
     /**
      * Ambient settings influenced by parameters.
      */
-    private AmbientSettings generateAmbientSettings(Random random, Double fogDensity) {
-        var actualFogDensity = fogDensity != null ? fogDensity : 0.025;
+    private AmbientSettings generateAmbientSettings(SeededRandom rng, Double fogDensity) {
+        Double actualFogDensity = fogDensity != null ? fogDensity : 0.025;
         return new AmbientSettings(
-                0.3f + random.nextFloat() * 0.7f,
-                random.nextFloat() * 0.5f,
+                0.3f + (float) rng.nextDouble() * 0.7f,
+                (float) rng.nextDouble() * 0.5f,
                 actualFogDensity.floatValue()
         );
     }
 
-    private WorldBounds generateBounds(Random random) {
+    private WorldBounds generateBounds(SeededRandom rng) {
         return new WorldBounds(
-                50f + random.nextFloat() * 100f,
-                20f + random.nextFloat() * 30f, // Lower height
-                50f + random.nextFloat() * 100f
+                50f + (float) rng.nextDouble() * 100f,
+                20f + (float) rng.nextDouble() * 30f, // Lower height
+                50f + (float) rng.nextDouble() * 100f
         );
     }
 }

@@ -109,6 +109,21 @@ components:
           type: number
           format: double
           description: Fog intensity (0.01-0.05), influenced by stillness
+        patternType:
+          type: string
+          description: Optional pattern algorithm type
+          enum:
+            - FLOW_LINES
+            - L_SYSTEM
+            - VORONOI
+            - SPIROGRAPH
+            - WAVE_INTERFERENCE
+            - CELLULAR_AUTOMATA
+            - FRACTAL
+            - PARTICLE_SYSTEM
+            - REACTION_DIFFUSION
+            - CONCENTRIC
+            - GEOMETRIC_GRID
     WorldDefinition:
       type: object
       properties:
@@ -117,6 +132,7 @@ components:
           format: uuid
         seed:
           type: integer
+          format: int64
         palette:
           type: array
           items:
@@ -133,6 +149,77 @@ components:
           $ref: '#/components/schemas/AmbientSettings'
         bounds:
           $ref: '#/components/schemas/WorldBounds'
+        pattern:
+          $ref: '#/components/schemas/Pattern'
+    Point3D:
+      type: object
+      properties:
+        x:
+          type: number
+          format: float
+        y:
+          type: number
+          format: float
+        z:
+          type: number
+          format: float
+        color:
+          type: string
+        size:
+          type: number
+          format: float
+    Line3D:
+      type: object
+      properties:
+        vertices:
+          type: array
+          items:
+            $ref: '#/components/schemas/Point3D'
+        color:
+          type: string
+        width:
+          type: number
+          format: float
+    PatternParameters:
+      type: object
+      properties:
+        iterations:
+          type: integer
+        scale:
+          type: number
+          format: float
+        complexity:
+          type: number
+          format: float
+        rule:
+          type: string
+    Pattern:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - FLOW_LINES
+            - L_SYSTEM
+            - VORONOI
+            - SPIROGRAPH
+            - WAVE_INTERFERENCE
+            - CELLULAR_AUTOMATA
+            - FRACTAL
+            - PARTICLE_SYSTEM
+            - REACTION_DIFFUSION
+            - CONCENTRIC
+            - GEOMETRIC_GRID
+        points:
+          type: array
+          items:
+            $ref: '#/components/schemas/Point3D'
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/Line3D'
+        parameters:
+          $ref: '#/components/schemas/PatternParameters'
     FlowField:
       type: object
       properties:
@@ -148,6 +235,9 @@ components:
           type: number
         strength:
           type: number
+        fieldSeed:
+          type: integer
+          format: int64
     GeometryField:
       type: object
       properties:

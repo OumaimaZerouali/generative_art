@@ -32,5 +32,8 @@ build/
 ### VS Code ###
 .vscode/
 
-### Copilot ###
-.github/instructions
+### macOS ###
+.DS_Store
+
+### Claude Code ###
+.claude/

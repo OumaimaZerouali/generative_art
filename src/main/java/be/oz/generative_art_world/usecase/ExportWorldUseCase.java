@@ -13,9 +13,9 @@ public class ExportWorldUseCase {
     private final ObjectMapper objectMapper;
     private final WorldRepository worldRepository;
 
-    public ExportWorldUseCase(WorldRepository worldRepository) {
+    public ExportWorldUseCase(WorldRepository worldRepository, ObjectMapper objectMapper) {
         this.worldRepository = worldRepository;
-        this.objectMapper = new ObjectMapper();
+        this.objectMapper = objectMapper;
     }
 
     public Optional<String> execute(UUID id) {
