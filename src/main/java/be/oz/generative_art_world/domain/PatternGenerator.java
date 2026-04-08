@@ -12,15 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Generates various generative art patterns using different algorithms.
- */
 @Component
 public class PatternGenerator {
 
-    /**
-     * Generates a pattern based on the specified type.
-     */
     public Pattern generate(PatternType type, SeededRandom rng, Palette palette, WorldBounds bounds, float complexity) {
         return switch (type) {
             case FLOW_LINES -> generateFlowLines(rng, palette, bounds, complexity);
@@ -37,10 +31,6 @@ public class PatternGenerator {
         };
     }
 
-    /**
-     * Flow lines following noise-based vector fields.
-     * Uses real Perlin fields from the generative-art-library for deterministic flow.
-     */
     private Pattern generateFlowLines(SeededRandom rng, Palette palette, WorldBounds bounds, float complexity) {
         List<Pattern.Line3D> lines = new ArrayList<>();
         int lineCount = (int) (50 + complexity * 150);
@@ -78,9 +68,6 @@ public class PatternGenerator {
             new Pattern.PatternParameters((int) (complexity * 100), 1.0f, complexity, null));
     }
 
-    /**
-     * L-System: recursive grammar-based structures (trees, plants)
-     */
     private Pattern generateLSystem(SeededRandom rng, Palette palette, WorldBounds bounds, float complexity) {
         List<Pattern.Line3D> lines = new ArrayList<>();
 
@@ -153,10 +140,6 @@ public class PatternGenerator {
             new Pattern.PatternParameters(iterations, 1.0f, complexity, "FF+[+F-F-F]-[-F+F+F]"));
     }
 
-    /**
-     * Voronoi diagram tessellation.
-     * Uses Vec2 from the generative-art-library to represent 2D seed points.
-     */
     private Pattern generateVoronoi(SeededRandom rng, Palette palette, WorldBounds bounds, float complexity) {
         List<Pattern.Line3D> lines = new ArrayList<>();
         List<Pattern.Point3D> points = new ArrayList<>();
@@ -216,9 +199,6 @@ public class PatternGenerator {
             new Pattern.PatternParameters(pointCount, 1.0f, complexity, null));
     }
 
-    /**
-     * Spirograph patterns
-     */
     private Pattern generateSpirograph(SeededRandom rng, Palette palette, WorldBounds bounds, float complexity) {
         List<Pattern.Line3D> lines = new ArrayList<>();
         int patternCount = 3 + (int) (complexity * 5);
@@ -251,9 +231,6 @@ public class PatternGenerator {
             new Pattern.PatternParameters(patternCount, 1.0f, complexity, null));
     }
 
-    /**
-     * Wave interference patterns (moiré)
-     */
     private Pattern generateWaveInterference(SeededRandom rng, Palette palette, WorldBounds bounds, float complexity) {
         List<Pattern.Line3D> lines = new ArrayList<>();
         int waveCount = 2 + (int) (complexity * 3);
@@ -299,9 +276,6 @@ public class PatternGenerator {
             new Pattern.PatternParameters(waveCount, 1.0f, complexity, null));
     }
 
-    /**
-     * Cellular automata (1D projected to 2D)
-     */
     private Pattern generateCellularAutomata(SeededRandom rng, Palette palette, WorldBounds bounds, float complexity) {
         List<Pattern.Point3D> points = new ArrayList<>();
 
@@ -338,9 +312,6 @@ public class PatternGenerator {
             new Pattern.PatternParameters(generations, 1.0f, complexity, "Rule " + rule));
     }
 
-    /**
-     * Fractal patterns (recursive subdivision)
-     */
     private Pattern generateFractal(SeededRandom rng, Palette palette, WorldBounds bounds, float complexity) {
         List<Pattern.Line3D> lines = new ArrayList<>();
         int depth = 3 + (int) (complexity * 3);
@@ -381,9 +352,6 @@ public class PatternGenerator {
         generateFractalBranch(lines, endX, endY, endZ, length * lengthRatio, angle - branchAngle, depth - 1, color, rng);
     }
 
-    /**
-     * Particle system with trails
-     */
     private Pattern generateParticleSystem(SeededRandom rng, Palette palette, WorldBounds bounds, float complexity) {
         List<Pattern.Line3D> lines = new ArrayList<>();
         int particleCount = 20 + (int) (complexity * 80);
@@ -425,9 +393,6 @@ public class PatternGenerator {
             new Pattern.PatternParameters(particleCount, 1.0f, complexity, null));
     }
 
-    /**
-     * Reaction-diffusion (simplified Turing patterns)
-     */
     private Pattern generateReactionDiffusion(SeededRandom rng, Palette palette, WorldBounds bounds, float complexity) {
         List<Pattern.Point3D> points = new ArrayList<>();
 
@@ -474,9 +439,6 @@ public class PatternGenerator {
             new Pattern.PatternParameters(iterations, 1.0f, complexity, null));
     }
 
-    /**
-     * Concentric circles/rings
-     */
     private Pattern generateConcentric(SeededRandom rng, Palette palette, WorldBounds bounds, float complexity) {
         List<Pattern.Line3D> lines = new ArrayList<>();
         int centerCount = 2 + (int) (complexity * 4);
@@ -508,9 +470,6 @@ public class PatternGenerator {
             new Pattern.PatternParameters(centerCount, 1.0f, complexity, null));
     }
 
-    /**
-     * Geometric grid patterns
-     */
     private Pattern generateGeometricGrid(SeededRandom rng, Palette palette, WorldBounds bounds, float complexity) {
         List<Pattern.Line3D> lines = new ArrayList<>();
 

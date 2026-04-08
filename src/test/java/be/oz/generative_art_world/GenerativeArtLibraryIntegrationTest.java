@@ -16,12 +16,6 @@ import java.util.ArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 
-/**
- * Integration test verifying the generative-art-library works correctly
- * as a dependency in this project.
- *
- * Tests cover the full pipeline: seeded randomness → field sampling → path tracing → SVG output.
- */
 class GenerativeArtLibraryIntegrationTest {
 
     @Nested

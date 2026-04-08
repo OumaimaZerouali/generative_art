@@ -14,6 +14,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,6 +23,7 @@ import java.util.UUID;
 @Table(name = "worlds")
 public class WorldEntity {
 
+    @Getter
     @Id
     private UUID id;
 
@@ -80,9 +82,9 @@ public class WorldEntity {
 
     public WorldDefinition toDomain(ObjectMapper mapper) {
         try {
-            List<String> colors = mapper.readValue(paletteJson, new TypeReference<List<String>>() {});
-            List<FlowField> flowFields = mapper.readValue(flowFieldsJson, new TypeReference<List<FlowField>>() {});
-            List<GeometryField> geometryFields = mapper.readValue(geometryFieldsJson, new TypeReference<List<GeometryField>>() {});
+            List<String> colors = mapper.readValue(paletteJson, new TypeReference<>() {});
+            List<FlowField> flowFields = mapper.readValue(flowFieldsJson, new TypeReference<>() {});
+            List<GeometryField> geometryFields = mapper.readValue(geometryFieldsJson, new TypeReference<>() {});
             AmbientSettings ambient = mapper.readValue(ambientJson, AmbientSettings.class);
             WorldBounds bounds = mapper.readValue(boundsJson, WorldBounds.class);
             Pattern pattern = patternJson != null ? mapper.readValue(patternJson, Pattern.class) : null;
@@ -99,9 +101,5 @@ public class WorldEntity {
         } catch (JsonProcessingException e) {
             throw new IllegalStateException("Failed to deserialize world " + id, e);
         }
-    }
-
-    public UUID getId() {
-        return id;
     }
 }

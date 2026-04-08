@@ -15,19 +15,6 @@ public class WorldGenerator {
     private final PaletteGenerator paletteGenerator;
     private final PatternGenerator patternGenerator;
 
-    /**
-     * Generate world with full customization options.
-     *
-     * @param seed Base seed for randomness
-     * @param flowScale Flow field intensity (0.5-2.0)
-     * @param flowComplexity Number of flow layers (0.0-1.0)
-     * @param density Geometry density (0.0-1.0)
-     * @param verticalBias Vertical vs horizontal emphasis (0.0-1.0)
-     * @param fogDensity Fog intensity (0.01-0.05)
-     * @param colorHarmony Color harmony type (optional)
-     * @param patternType Pattern algorithm type (optional)
-     * @param paletteColors Custom palette colors (optional)
-     */
     public WorldDefinition generate(Long seed, Double flowScale, Double flowComplexity,
                                    Double density, Double verticalBias, Double fogDensity,
                                    ColorHarmony colorHarmony, PatternType patternType,
@@ -66,25 +53,16 @@ public class WorldGenerator {
         );
     }
 
-    /**
-     * Generate world from basic parameters.
-     */
     public WorldDefinition generate(Long seed, Double flowScale, Double flowComplexity,
                                    Double density, Double verticalBias, Double fogDensity) {
         return generate(seed, flowScale, flowComplexity, density, verticalBias, fogDensity,
                        null, null, null);
     }
 
-    /**
-     * Legacy method for backward compatibility.
-     */
     public WorldDefinition generate(Long seed) {
         return generate(seed, 1.0, 0.5, 0.5, 0.5, 0.025);
     }
 
-    /**
-     * Flow fields influenced by parameters.
-     */
     private List<FlowField> generateFlowFields(SeededRandom rng, Double flowScale, Double flowComplexity) {
         List<FlowField> fields = new ArrayList<>();
 
@@ -108,9 +86,6 @@ public class WorldGenerator {
         return fields;
     }
 
-    /**
-     * Geometry influenced by parameters.
-     */
     private List<GeometryField> generateGeometryFields(SeededRandom rng, Double density, Double verticalBias) {
         List<GeometryField> fields = new ArrayList<>();
         String[] geometryTypes = {"sphere", "cube", "cylinder", "torus", "cone"};
@@ -132,9 +107,6 @@ public class WorldGenerator {
         return fields;
     }
 
-    /**
-     * Ambient settings influenced by parameters.
-     */
     private AmbientSettings generateAmbientSettings(SeededRandom rng, Double fogDensity) {
         Double actualFogDensity = fogDensity != null ? fogDensity : 0.025;
         return new AmbientSettings(

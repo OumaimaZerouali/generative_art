@@ -7,21 +7,9 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Generates color palettes based on color theory principles.
- * Uses HSB (Hue, Saturation, Brightness) color model for harmony calculations.
- */
 @Component
 public class PaletteGenerator {
 
-    /**
-     * Generates a palette based on the specified color harmony.
-     *
-     * @param harmony The color harmony type
-     * @param rng Seeded random generator for variations
-     * @param colorCount Number of colors to generate
-     * @return A Palette with harmonious colors
-     */
     public Palette generate(ColorHarmony harmony, SeededRandom rng, int colorCount) {
         float baseHue = (float) rng.nextDouble(); // 0-1 range
 
@@ -43,9 +31,6 @@ public class PaletteGenerator {
         return new Palette(colors);
     }
 
-    /**
-     * Complementary: base color + opposite on color wheel
-     */
     private List<String> generateComplementary(float baseHue, SeededRandom rng, int count) {
         List<String> colors = new ArrayList<>();
         float complementHue = (baseHue + 0.5f) % 1.0f;
@@ -60,9 +45,6 @@ public class PaletteGenerator {
         return colors;
     }
 
-    /**
-     * Analogous: colors adjacent on the color wheel (30 degrees apart)
-     */
     private List<String> generateAnalogous(float baseHue, SeededRandom rng, int count) {
         List<String> colors = new ArrayList<>();
         float step = 1.0f / 12.0f; // 30 degrees
@@ -78,9 +60,6 @@ public class PaletteGenerator {
         return colors;
     }
 
-    /**
-     * Triadic: three colors equally spaced (120 degrees apart)
-     */
     private List<String> generateTriadic(float baseHue, SeededRandom rng, int count) {
         List<String> colors = new ArrayList<>();
         float[] hues = {baseHue, (baseHue + 1.0f / 3.0f) % 1.0f, (baseHue + 2.0f / 3.0f) % 1.0f};
@@ -94,9 +73,6 @@ public class PaletteGenerator {
         return colors;
     }
 
-    /**
-     * Tetradic: four colors forming a rectangle (90 degrees apart)
-     */
     private List<String> generateTetradic(float baseHue, SeededRandom rng, int count) {
         List<String> colors = new ArrayList<>();
         float[] hues = {
@@ -115,9 +91,6 @@ public class PaletteGenerator {
         return colors;
     }
 
-    /**
-     * Split-complementary: base + two colors adjacent to complement
-     */
     private List<String> generateSplitComplementary(float baseHue, SeededRandom rng, int count) {
         List<String> colors = new ArrayList<>();
         float complement = (baseHue + 0.5f) % 1.0f;
@@ -136,9 +109,6 @@ public class PaletteGenerator {
         return colors;
     }
 
-    /**
-     * Monochromatic: variations of a single hue
-     */
     private List<String> generateMonochromatic(float baseHue, SeededRandom rng, int count) {
         List<String> colors = new ArrayList<>();
 
@@ -151,9 +121,6 @@ public class PaletteGenerator {
         return colors;
     }
 
-    /**
-     * Warm colors: reds, oranges, yellows (hue 0-60 degrees)
-     */
     private List<String> generateWarm(SeededRandom rng, int count) {
         List<String> colors = new ArrayList<>();
 
@@ -166,9 +133,6 @@ public class PaletteGenerator {
         return colors;
     }
 
-    /**
-     * Cool colors: blues, greens, purples (hue 180-300 degrees)
-     */
     private List<String> generateCool(SeededRandom rng, int count) {
         List<String> colors = new ArrayList<>();
 
@@ -181,9 +145,6 @@ public class PaletteGenerator {
         return colors;
     }
 
-    /**
-     * Earth tones: browns, greens, muted oranges
-     */
     private List<String> generateEarth(SeededRandom rng, int count) {
         List<String> colors = new ArrayList<>();
         // Earth hues: oranges (30), browns (20-40), greens (80-140)
@@ -199,9 +160,6 @@ public class PaletteGenerator {
         return colors;
     }
 
-    /**
-     * Pastel: soft, low saturation colors
-     */
     private List<String> generatePastel(float baseHue, SeededRandom rng, int count) {
         List<String> colors = new ArrayList<>();
 
@@ -215,9 +173,6 @@ public class PaletteGenerator {
         return colors;
     }
 
-    /**
-     * Neon: high saturation, vibrant colors
-     */
     private List<String> generateNeon(float baseHue, SeededRandom rng, int count) {
         List<String> colors = new ArrayList<>();
 
@@ -231,9 +186,6 @@ public class PaletteGenerator {
         return colors;
     }
 
-    /**
-     * Random colors
-     */
     private List<String> generateRandom(SeededRandom rng, int count) {
         List<String> colors = new ArrayList<>();
 
@@ -243,17 +195,11 @@ public class PaletteGenerator {
         return colors;
     }
 
-    /**
-     * Add small random variation to a value
-     */
     private float addVariation(float value, SeededRandom rng, float maxVariation) {
         float variation = ((float) rng.nextDouble() - 0.5f) * 2 * maxVariation;
         return (value + variation + 1.0f) % 1.0f;
     }
 
-    /**
-     * Convert HSB to hex color string
-     */
     private String hsbToHex(float hue, float saturation, float brightness) {
         int rgb = Color.HSBtoRGB(hue, saturation, brightness);
         return String.format("#%06x", rgb & 0xFFFFFF);
