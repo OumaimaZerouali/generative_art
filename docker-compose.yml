@@ -1,0 +1,35 @@
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: generative_art_world/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: genartdb
+      DB_USER: genart
+      DB_PASSWORD: genart
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: genartdb
+      POSTGRES_USER: genart
+      POSTGRES_PASSWORD: genart
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U genart -d genartdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
